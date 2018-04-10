@@ -1,7 +1,9 @@
 package ru.androidacademy.spb.gallerylist;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    @Nullable
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +30,27 @@ public class MainActivity extends AppCompatActivity {
             layoutManager = new LinearLayoutManager(this);
         }
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(new CatsAdapter(generateCats()));
+
+        CatsAdapter.OnItemClickListener onItemClickListener = new CatsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull Cat cat, int position) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                }
+                mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.cat);
+                mediaPlayer.start();
+            }
+        };
+        recyclerView.setAdapter(new CatsAdapter(generateCats(), onItemClickListener));
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer = null;
+        }
+        super.onDestroy();
     }
 
     @NonNull
