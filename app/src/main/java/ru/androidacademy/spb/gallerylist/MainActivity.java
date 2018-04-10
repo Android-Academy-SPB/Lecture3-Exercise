@@ -1,10 +1,11 @@
 package ru.androidacademy.spb.gallerylist;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView.LayoutManager layoutManager;
+        if (getResources().getBoolean(R.bool.is_landscape)) {
+            layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        } else {
+            layoutManager = new LinearLayoutManager(this);
+        }
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(new CatsAdapter(generateCats()));
     }
 
